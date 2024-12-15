@@ -5,7 +5,7 @@ var room = HBInit({
     maxPlayers: 24,
     noPlayer: false,
     playerName: "Smash bot",
-    public: true,
+    public: false	,
     geo: { "code": 'br', "lat": -19.912998, "lon": -43.940933 }
 });
 room.setCustomStadium(tennis1);
@@ -20,8 +20,8 @@ var staffID = ['OrjOX2_oD3gc1IU7hwQlyma3HkGuxFYquph_AFaFTDw', 'nulo'];  // IDs d
 
 // Função chamada quando um jogador entra na sala
 room.onPlayerJoin = function(player) {
-    var players = room.getPlayerList
-	if(players.length >= 1) {
+    var players = room.getPlayerList();
+	if(players.length <= 1) {
 		room.setPlayerAdmin(player.id, true);
 	}
 	room.sendAnnouncement(
@@ -38,11 +38,12 @@ room.onPlayerJoin = function(player) {
         "bold",
 	1   
     );
-    if(player.name === "fishno", "yakisoba.") {
-	    if(player.id === "OrjOX2_oD3gc1IU7hwQlyma3HkGuxFYquph_AFaFTDw")
-	    	room.setPlayerAdmin(player.id, true);
+   if(player.name === "fishno" && player.auth === "OrjOX2_oD3gc1IU7hwQlyma3HkGuxFYquph_AFaFTDw") {
+	room.setPlayerAdmin(player.id, true);
+   else if(player.name === "Teru" && player.auth === "jY3p6DXRbnTI44B9PhYAutlcv9_XKqQy8MApSQntUtc") {
+	room.setPlayerAdmin(player.id, true);   
     	    
-    }
+    };
 
 	
 };
@@ -52,4 +53,8 @@ function centerText(text) {
     var spaces = Math.max(0, (50 - text.length) / 2);
     var space = ' '.repeat(Math.floor(spaces));
     return space + text + space;
-}
+};
+// Chat customizado
+room.onPlayerChat = function(player)
+	if
+
