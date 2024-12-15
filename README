@@ -1,1 +1,2 @@
-This is a base bot for rooms in haxball. No specific maps. It has goals, assists wins and stats in general. Economy system needs to be implemented manually using your database
+Use in https://haxball.com/headless.
+You can do an API with discord to open rooms (MUST USE HEADLESS TOKEN)
