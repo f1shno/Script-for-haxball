@@ -9,19 +9,21 @@ var room = HBInit({
     geo: { "code": 'br', "lat": -19.912998, "lon": -43.940933 }
 });
 room.setCustomStadium(tennis1);
-room.setTeamsLock(true)
+room.setTeamsLock(true);
+room.setScoreLimit(0);
+room.setTimeLimit(0);
 // Variáveis globais
-var dc = "dc link";  // Link do Discord (pode ser usado depois)
+var dc = "dc link";  // Link do Discord (vou usar depois)
 var announce = room.sendAnnouncement;
 
 // Staff (administradores ou moderadores da sala)
-var staff = ['fishno', 'yakisoba'];  // Nomes dos membros da equipe staff
-var staffID = ['OrjOX2_oD3gc1IU7hwQlyma3HkGuxFYquph_AFaFTDw', 'nulo'];  // IDs da staff
+var staff = ['fishno', 'yakisoba'];  // Nomes dos donos
+var staffID = ['OrjOX2_oD3gc1IU7hwQlyma3HkGuxFYquph_AFaFTDw', 'nulo'];  // IDs dos donos
 
 // Função chamada quando um jogador entra na sala
 room.onPlayerJoin = function(player) {
     var players = room.getPlayerList();
-	if(players.length <= 1) {
+	if(players.length <= 2) {
 		room.setPlayerAdmin(player.id, true);
 	}
 	room.sendAnnouncement(
@@ -55,8 +57,23 @@ function centerText(text) {
     return space + text + space;
 };
 // Chat customizado e comandos
-room.onPlayerChat = function (player, message) {
-	var comandos = [`!bb`, `!ajuda`, `!help`, `!afk`, `!afks`];
+var comandos = [`!bb`, `!ajuda`, `!afks`, `!unis`, `!stats`, `!sequência`, `!pontos`, `!saves`, `!wins`, `!winrate`, `!provo`];
+
+var afk = {};
+
+function unAfk(player) {
+    afk[player.id] = false;
+}
+
+function setAfk(player) {
+    afk[player.id] = true;
+}
+
+function isAfk(player) {
+    return afk[player.id] === true;
+}
+
+room.onPlayerChat = function(player, message) {
     if (staff.includes(player.name) && player.admin === true) {
         room.sendAnnouncement(
             `[DONO] ${player.name}: ${message}`,
@@ -73,21 +90,97 @@ room.onPlayerChat = function (player, message) {
             "normal",
             1
         );
-    }     // Isso aí checa se a mensagem é um comando
+    }
+
     if (comandos.includes(message)) {
         if (message === `!bb`) {
             room.kickPlayer(player.id, "Volte sempre!", false);
+            return false;
         } else if (message === `!ajuda`) {
             room.sendAnnouncement(
-                `SMASH: comandos: !bb, !ajuda, !help, !afk, !afks.`,
+                `SMASH: comandos: !bb, !ajuda, !afk, !afks, !unis, !provo.`,
                 player.id,
                 0x00FF00,
                 "bold",
                 2
             );
-	return false;
-	}
+            return false; // Impede que a mensagem apareça no chat
+        } else if (message === `!afks`) {
+            let afkPlayers = Object.keys(afk).filter(id => afk[id] === true);
+            if (afkPlayers.length === 0) {
+                room.sendAnnouncement(
+                    `SMASH: Não há ninguém na lista de AFKs!`,
+                    player.id,
+                    0xFFFFFF,
+                    "normal",
+                    2
+                );
+            } else {
+                let afkNames = afkPlayers.map(id => room.getPlayer(id).name).join(", ");
+                room.sendAnnouncement(
+                    `SMASH: Lista de AFKs: ${afkNames}`,
+                    player.id,
+                    0xFFFFFF,
+                    "normal",
+                    2
+                );
+            }
+        }
     }
-    return false;
+
+    if (message === "!afk") {
+        if (isAfk(player)) {
+            room.sendAnnouncement(
+                `SMASH: ${player.name} não está mais afk.`,
+                null,
+                0xFFFFFF,
+                "bold",
+                2
+            );
+            unAfk(player);
+        } else {
+            room.sendAnnouncement(
+                `SMASH: ${player.name} agora está afk!`,
+                null,
+                0xFFFFFF,
+                "bold",
+                2
+            );
+            setAfk(player);
+        }
+    }
+
+    return false;  // Impede que qualquer outra mensagem seja enviada no chat
 };
+
+// sistema de picks
+room.onPlayerJoin = function(player) {
+var players = room.getPlayerList();	
+var novaOrdem = players.map(p => p.id)
+	if(players.length <=2) {
+		room.setPlayerTeam(player.id, 1)
+		room.stopGame();
+		room.startGame();
+	} else if (players.length <=3) {
+		room.setPlayerTeam(player.id, 2);
+		room.stopGame();
+		room.startGame();
+	} else if (players.length <=4) {
+		room.setPlayerTeam(player.id, 2);
+		room.stopGame();
+		room.startGame();
+	} else if (players.length <=5)  {
+		room.setPlayerTeam(player.id, 1);
+		room.stopGame();
+		room.startGame();
+	}  
+var fila = [];
+var posição = {};
+fila.push(player.name + " " + "[" + players.length + "]")
+}
+var specList = players.filter((x) => player.team[0])
+function updateSpecList() {
+	w.i.p
+}
+
 	
